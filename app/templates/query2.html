@@ -1,0 +1,40 @@
+<!-- /templates/queries.html  -->
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="post" "name" = target>
+		<br />
+		<div class="form-row">
+			<div class="col-sm-4">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="top_climbs">Top climbs</button>
+			</div>
+			<div class="col-sm-4">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="longest_walks">Longest walks</button>
+			</div>
+			<div class="col-sm-4">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="miles_walked">Miles walked</button>
+			</div>
+		</div>
+    </form>
+	<h6 class="text-center">Results for selected query: {{ title }}</h6>
+	<div class="table-fixed">
+		<table class="table" id="milesh">
+			<thead>
+				<tr>
+					<th style="width: 33.00%">Name</th>
+					<th style="width: 33.00%">Year</th>
+					<th style="width: 34.00%">Miles</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for milesh in milesh %}
+				<tr id={{ milesh.year }}>
+					<td style="width: 33.00%">{{ "Hez" }}</td>
+					<td style="width: 33.00%"> {{milesh.year }} </td>
+					<td style="width: 34.00%"> {{milesh.miles }} </td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}	

@@ -1,0 +1,80 @@
+{% extends 'base.html' %}
+
+{% block content %}
+    <form method="POST" id="target">
+		<div class="form-row">
+			<div class="col-sm-3">
+				<label for="fitid">item id:</label>
+				<input type="text" class="form-control" id="fitid" name="fitid" value="{{ item.id }}">
+			</div>
+			<div class="col-sm-3">
+				<label for="sdate">item date:</label>
+				<input type="text" class="form-control" id="sdate" name="sdate" value="{{ item.date }}">
+			</div>
+            <div class="col-sm3">
+				<label for="stype">Type:</label>
+				<select class="form-control" name="stype" method="GET" action="/">
+				  <option value="{{typename}}" selected>{{typename}}</option>
+				  {% for stype in stypes[0:] %}
+					<option value="{{stype}}">{{stype}}</option>
+				  {% endfor %}
+				</select>			
+			</div>
+			<div class="col-sm-3">
+				<label for="user">Participants:</label>
+				<select class="form-control" name="user" method="GET" action="/">
+				  <option value="{{whoname}}" selected>{{whoname}}</option>
+				  {% for user in users[0:] %}
+					<option value="{{user}}">{{user}}</option>
+				  {% endfor %}
+				</select>			
+			</div>
+		</div>
+		<br />
+		<div class="form-row">
+			<div class="col">
+				<label for="summary">Summary:</label>
+				<input type="text" class="form-control" id="summary" name="summary" value="{{ item.summary }}">
+			</div>
+		</div>
+		<br />
+		<div class="form-row">
+			<label for="storydet">Details:</label>
+			<textarea class="form-control" rows="8" id="storydet" name="storydet" >{{ item.storydet }}</textarea>
+		</div>
+		<br />
+		<div class="form-row">
+			<div class="col-sm-2">
+				<label for="miles">Miles:</label>
+				<input type="text" class="form-control" id="miles" name="miles" value="{{ item.miles }}">
+			</div>
+			<div class="col-sm-4">
+				<label for="minutes">Minutes:</label>
+				<input type="text" class="form-control" id="minutes" name="minutes" value="{{ item.minutes }}">
+			</div>
+			<div class="col-sm-2">
+				<label for="stats">Stats:</label>
+				<input type="text" class="form-control" id="stats" name="stats" value="{{ item.stats }}">
+			</div>
+		</div>
+		<br />
+		<div class="modal fade" tabindex="-1" role="dialog">
+		  <div class="modal-dialog" role="document">
+			<div class="modal-content">
+			  <div class="modal-header">
+				<button type="button" class="close" data-dismiss="modal" aria-label="Close"><span aria-hidden="true">&times;</span></button>
+				<h4 class="modal-title">Modal title</h4>
+			  </div>
+			  <div class="modal-body">
+				<p>One fine body&hellip;</p>
+			  </div>
+			  <div class="modal-footer">
+				<button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+				<button type="button" class="btn btn-primary">Save changes</button>
+			  </div>
+			</div><!-- /.modal-content -->
+		  </div><!-- /.modal-dialog -->
+		</div><!-- /.modal -->
+    </form>
+{% endblock %}
+

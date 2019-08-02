@@ -1,0 +1,62 @@
+<!-- /templates/base.html  -->
+<!doctype html>
+<html lang="en">
+	<head>
+	  <!-- Required meta tags -->
+	<meta charset="utf-8">
+	<meta name="viewport" content="width=device-width, initial-scale=1, shrink-to-fit=no">
+	<!-- Bootstrap CSS -->
+	<!-- <link href="..\static\style.css" rel="stylesheet" type="text/css"> -->
+	<link rel="stylesheet" href="..\static\bootstrap.min.css">
+	
+	<title>MicroFit</title>
+	</head>
+	{% block navbar %}
+	<nav class="navbar navbar-expand-lg navbar-light bg-light" style="background-color: #e3f2fd;">
+		<div class="container">
+			<a class="navbar-brand" href="#">MicroFit</a>
+			<div class="collapse navbar-collapse" id="navbarSupportedContent">
+				<ul class="navbar-nav">
+                    <li><a href="{{ url_for('index') }}">Home</a></li>
+ 					&nbsp
+					&nbsp
+                    <li><a href="{{ url_for('queries') }}">Queries</a></li>
+ 					&nbsp
+					&nbsp
+                    <li><a href="{{ url_for('queryr') }}">Recent stats</a></li>
+ 					&nbsp
+					&nbsp
+                </ul>
+                <ul class="nav navbar-nav navbar-right">
+                    {% if current_user.is_anonymous %}
+                    <li><a href="{{ url_for('login') }}">Login</a></li>
+                    {% else %}
+                    <li><a href="{{ url_for('user', username=current_user.username) }}">Profile</a></li>
+                    <li><a href="{{ url_for('logout') }}">Logout</a></li>
+                    {% endif %}
+				</ul>
+			</div>
+		</div>
+	</nav>
+	{% endblock %}
+	<body>
+		<div class="container">
+			<div class="row align-items-center">
+                <div class="col">
+                    <div class="justify-content-center">
+						<style type="text/css">
+							body { background-color: rgba(205, 219, 217, 0.9) !important; } /* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+						</style>
+						{% block content %} {% endblock %}
+					</div>
+				</div>
+			</div>
+		</div>
+		<script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/moment.js/2.22.2/moment.min.js"></script>
+		<script src="..\static\hez.js"></script>
+		<script src="..\static\jquery.min.js"></script>
+		<script src="..\static\bootsrap.min.js"></script>
+		<!-- <script src="..\static\moment.min.js"></script> -->
+	</body>
+</html>
+

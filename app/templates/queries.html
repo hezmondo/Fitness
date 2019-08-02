@@ -1,0 +1,59 @@
+{% extends 'base.html' %}
+
+{% block app_content %}
+    <form method="post" "name" = target>
+		<div class="form-row">
+			<div class="col-sm-3">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="top_climbs">Top climbs</button>
+			</div>
+			<div class="col-sm-3">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="longest_walks">Longest walks</button>
+			</div>
+			<div class="col-sm-3">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="miles_walked_per_year">Miles walked per year</button>
+			</div>
+			<div class="col-sm-3">
+				<button type="submit" class="btn btn-block btn-primary" name="query" value="fastest_runs">Fastest runs</button>
+			</div>
+		</div>
+    </form>
+	<div class="container">
+	  <div class="row voffset2">
+		<div class="col-lg-12">
+		  <p>
+			<h4 class="text-center">Results for selected query: {{ title }}</h6>
+		  </p>
+		</div>
+	  </div>
+	</div>
+	<div class="table-fixed">
+		<table class="table" id="sessions">
+			<thead>
+				<tr>
+					<th style="width: 10.00%">date</th>
+					<th style="width: 18.00%">summary</th>
+					<th style="width: 43.00%">details</th>
+					<th style="width: 6.00%">miles</th>
+					<th style="width: 7.00%">feet</th>
+					<th style="width: 6.00%">minutes</th>
+					<th style="width: 5.00%">ssss</th>
+					<th style="width: 5.00%">ssss</th>
+				</tr>
+			</thead>
+			<tbody>
+			{% for item in items %}
+				<tr id={{ item.id }}>
+					<td style="width: 10.00%">{{ item.date }}</th>
+					<td style="width: 18.00%"> {{ item.summary }} </td>
+					<td style="width: 43.00%"> {{ item.storydet }} </td>
+					<td style="width: 6.00%"> {{ item.miles }} </td>
+					<td style="width: 7.00%"> {{ item.stats }} </td>
+					<td style="width: 6.00%"> {{ item.minutes }} </td>
+					<td style="width: 5.00%"> <a href="/edititem/{{ item.id }}">View</a> </td>
+					<td style="width: 5.00%"> <a href="/cloneitem/{{ item.id }}">Clone</a> </td>
+				</tr>
+			{% endfor %}
+			</tbody>
+		</table>
+	</div>
+{% endblock %}	

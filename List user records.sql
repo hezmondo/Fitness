@@ -1,1 +1,0 @@
-SELECT * FROM fitness.user;

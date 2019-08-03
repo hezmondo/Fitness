@@ -3,6 +3,11 @@
   <component name="ChangeListManager">
     <list default="true" id="cd4b0d3c-b718-478b-af20-59f7b42c49e6" name="Default" comment="">
       <change type="DELETED" beforePath="$PROJECT_DIR$/.idea/workspace.xml" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/List fitness records.sql" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/List user records.sql" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/List user_fit records.sql" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/logs/microblog.log" afterPath="" />
+      <change type="DELETED" beforePath="$PROJECT_DIR$/logs/microfit.log" afterPath="" />
     </list>
     <option name="TRACKING_ENABLED" value="true" />
     <option name="SHOW_DIALOG" value="false" />
@@ -41,9 +46,7 @@
   <component name="Git.Settings">
     <option name="RECENT_GIT_ROOT_PATH" value="$PROJECT_DIR$" />
   </component>
-  <component name="ProjectLevelVcsManager" settingsEditedManually="true">
-    <ConfirmationsSetting value="1" id="Add" />
-  </component>
+  <component name="ProjectLevelVcsManager" settingsEditedManually="true" />
   <component name="ProjectView">
     <navigator currentView="Scope" currentSubView="Project Files" proportions="" version="1">
       <flattenPackages />
@@ -78,11 +81,6 @@
               <item name="Root" type="cbb8eebc:String" user="Root" />
               <item name="fitness" type="cbb8eebc:String" user="fitness" />
             </path>
-            <path>
-              <item name="Root" type="cbb8eebc:String" user="Root" />
-              <item name="fitness" type="cbb8eebc:String" user="fitness" />
-              <item name="logs" type="cbb8eebc:String" user="logs" />
-            </path>
           </expand>
           <select />
         </subPane>
@@ -109,6 +107,14 @@
     <option name="remove_strategy" value="false" />
   </component>
   <component name="TaskManager">
+    <task id="LOCAL-00001" summary="tidying up">
+      <created>1564833416882</created>
+      <option name="number" value="00001" />
+      <option name="presentableId" value="LOCAL-00001" />
+      <option name="project" value="LOCAL" />
+      <updated>1564833416882</updated>
+    </task>
+    <option name="localTasksCounter" value="2" />
     <servers />
   </component>
   <component name="ToolWindowManager">
@@ -133,6 +139,10 @@
       <window_info id="Find" active="false" anchor="bottom" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.33" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
       <window_info id="Ant Build" active="false" anchor="right" auto_hide="false" internal_type="DOCKED" type="DOCKED" visible="false" show_stripe_button="true" weight="0.25" sideWeight="0.5" order="1" side_tool="false" content_ui="tabs" />
     </layout>
+  </component>
+  <component name="VcsManagerConfiguration">
+    <MESSAGE value="tidying up" />
+    <option name="LAST_COMMIT_MESSAGE" value="tidying up" />
   </component>
   <component name="XDebuggerManager">
     <breakpoint-manager />

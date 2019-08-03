@@ -1,8 +1,0 @@
-cd C:\MJP\fitness
-C:\MJP\fitness\Scripts\activate
-
-<link rel="stylesheet" href="https://stackpath.bootstrapcdn.com/bootstrap/4.1.0/css/bootstrap.min.css">
-	
-<link rel="stylesheet" href="{{ url_for('static', filename='style.css') }}">
-
-

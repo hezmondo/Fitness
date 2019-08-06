@@ -1,15 +1,14 @@
 # routes.py
-#from datetime import date, datetime
+# from datetime import date, datetime
 import datetime
 from dateutil.relativedelta import relativedelta
-from app import app, db
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
-from werkzeug.urls import url_parse
-from app import app, db
 from sqlalchemy import desc, extract, func, literal, and_, or_
-from app.forms import EditProfileForm, LoginForm, RegistrationForm, \
-    ResetPasswordRequestForm, ResetPasswordForm
+from werkzeug.urls import url_parse
+
+from app import app, db
+from app.forms import EditProfileForm, LoginForm, RegistrationForm, ResetPasswordRequestForm, ResetPasswordForm
 from app.email import send_password_reset_email
 from app.models import Fitness, Fitstory, Typefit, User, user_fit
 
@@ -20,10 +19,10 @@ def before_request():
         current_user.last_seen = datetime.datetime.utcnow()
         db.session.commit()
 
-        
+
 @app.route('/cloneitem/<int:id>', methods=["POST", "GET"])
 def cloneitem(id):
-    today=datetime.date.today()
+    today = datetime.date.today()
     if request.method == "POST":
         thisdate = request.form["itemdate"]
         thistype = request.form["stype"]
@@ -33,8 +32,8 @@ def cloneitem(id):
         thismiles = request.form["miles"]
         thisstats = request.form["stats"]
         thisminutes = request.form["minutes"]
-        newfit = Fitness(date=thisdate, summary=thissummary, type_id=thistype_id, \
-                      miles=thismiles, stats=thisstats, minutes=thisminutes)
+        newfit = Fitness(date=thisdate, summary=thissummary, type_id=thistype_id, miles=thismiles, stats=thisstats,
+                         minutes=thisminutes)
         users_set = request.form.getlist("username")
         for user in users_set:
             user = User.query.filter_by(username=user).first()
@@ -51,33 +50,37 @@ def cloneitem(id):
     else:
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
         thisitem = Fitness.query.get(id)
-        users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(Fitness.id==id).all()]
+        users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(
+            Fitness.id == id).all()]
         users_all = [value for (value,) in User.query.with_entities(User.username).order_by(User.username).all()]
-        print ("these users:", users_set)
-        item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(Fitness.id, Fitness.date, \
-               Typefit.typedet, Fitness.summary, Fitness.miles, Fitness.stats, \
-               Fitness.minutes, Fitstory.storydet).filter(Fitness.id==('{}'.format(id))).first()
+        print("these users:", users_set)
+        item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
+            Fitness.id, Fitness.date,
+            Typefit.typedet, Fitness.summary,
+            Fitness.miles, Fitness.stats,
+            Fitness.minutes, Fitstory.storydet).filter(Fitness.id == ('{}'.format(id))).first()
         typename = item.typedet
         if item is None:
             flash('N')
             return redirect(url_for('index'))
-    return render_template('cloneitem.html', title='clone', stypes=stypes, users_set=users_set, today=today, users_all=users_all, typename=typename, item=item)
+    return render_template('cloneitem.html', title='clone', stypes=stypes, users_set=users_set, today=today,
+                           users_all=users_all, typename=typename, item=item)
 
 
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
     delete_item = Fitness.query.get(id)
-    delete_story = Fitstory.query.filter(Fitstory.fit_id==('{}'.format(id))).first()
+    delete_story = Fitstory.query.filter(Fitstory.fit_id == ('{}'.format(id))).first()
     if delete_story is not None:
         db.session.delete(delete_story)
     db.session.delete(delete_item)
     db.session.commit()
     return redirect(url_for('index'))
 
-        
+
 @app.route('/edititem/<int:id>', methods=["POST", "GET"])
 def edititem(id):
-    today=datetime.date.today()
+    today = datetime.date.today()
     if request.method == "POST":
         update_item = Fitness.query.get(id)
         update_item.date = request.form["itemdate"]
@@ -96,26 +99,31 @@ def edititem(id):
         if thisstory is None or thisstory == "" or thisstory == "None":
             db.session.commit()
         else:
-            update_story = Fitstory.query.filter(Fitstory.fit_id==('{}'.format(id))).first()
+            update_story = Fitstory.query.filter(Fitstory.fit_id == ('{}'.format(id))).first()
             update_story.storydet = thisstory
             db.session.commit()
         return redirect('/index')
     else:
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
         thisitem = Fitness.query.get(id)
-        users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(Fitness.id==id).all()]
+        users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(
+            Fitness.id == id).all()]
         users_all = [value for (value,) in User.query.with_entities(User.username).order_by(User.username).all()]
-        print ("these users:", users_set)
-        item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(Fitness.id, Fitness.date, \
-               Typefit.typedet, Fitness.summary, Fitness.miles, Fitness.stats, \
-               Fitness.minutes, Fitstory.storydet).filter(Fitness.id==('{}'.format(id))).first()
+        print("these users:", users_set)
+        item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
+            Fitness.id, Fitness.date,
+            Typefit.typedet, Fitness.summary,
+            Fitness.miles, Fitness.stats,
+            Fitness.minutes, Fitstory.storydet).filter(
+            Fitness.id == ('{}'.format(id))).first()
         typename = item.typedet
         if item is None:
             flash('N')
             return redirect(url_for('index'))
-    return render_template('edititem.html', title='edit', stypes=stypes, users_set=users_set, today=today, users_all=users_all, typename=typename, item=item)
+    return render_template('edititem.html', title='edit', stypes=stypes, users_set=users_set, today=today,
+                           users_all=users_all, typename=typename, item=item)
 
-    
+
 @app.route('/edit_profile', methods=['GET', 'POST'])
 @login_required
 def edit_profile():
@@ -130,23 +138,38 @@ def edit_profile():
     return render_template('edit_profile.html', title='Edit Profile',
                            form=form)
 
-                           
+
 @app.route('/', methods=['GET', 'POST'])
 @app.route('/index', methods=['GET', 'POST'])
 @login_required
 def index():
     if request.method == "POST":
         seltype = request.form["filter"]
-        items = Fitness.query.join(Typefit).join(user_fit).join(User).outerjoin(Fitstory).with_entities(Fitness.id, \
-          Fitness.date, User.username, Typefit.typedet, Fitness.summary, Fitness.miles, \
-          Fitness.stats, Fitness.minutes, Fitstory.storydet).filter(Typefit.typedet.ilike \
-          ('%{}%'.format(seltype))).order_by(desc(Fitness.date)).limit(50).all()
-#        print (items)
+        items = Fitness.query.join(Typefit).join(user_fit).join(User).outerjoin(Fitstory).with_entities(
+            Fitness.id,
+            Fitness.date,
+            User.username,
+            Typefit.typedet,
+            Fitness.summary,
+            Fitness.miles,
+            Fitness.stats,
+            Fitness.minutes,
+            Fitstory.storydet).filter(
+            Typefit.typedet.ilike('%{}%'.format(seltype))).order_by(desc(Fitness.date)).limit(50).all()
+        #        print (items)
         return render_template('index.html', title=seltype, items=items)
     else:
-        items = Fitness.query.join(Typefit).join(user_fit).join(User).outerjoin(Fitstory).with_entities(Fitness.id, \
-          Fitness.date, User.username, Typefit.typedet, Fitness.summary, Fitness.miles, Fitness.stats, Fitness.minutes, \
-          Fitstory.storydet).order_by(desc(Fitness.date)).limit(50).all()
+        items = Fitness.query.join(Typefit).join(user_fit).join(User).outerjoin(Fitstory).with_entities(
+            Fitness.id,
+            Fitness.date,
+            User.username,
+            Typefit.typedet,
+            Fitness.summary,
+            Fitness.miles,
+            Fitness.stats,
+            Fitness.minutes,
+            Fitstory.storydet).order_by(
+            desc(Fitness.date)).limit(50).all()
         return render_template('index.html', title='All items', items=items)
 
 
@@ -176,7 +199,7 @@ def logout():
 
 @app.route('/newitem', methods=['GET', 'POST'])
 def newitem():
-    today=datetime.date.today()
+    today = datetime.date.today()
     if request.method == "POST":
         thisdate = request.form["itemdate"]
         thistype = request.form["stype"]
@@ -186,11 +209,11 @@ def newitem():
         thismiles = request.form["miles"]
         thisstats = request.form["stats"]
         thisminutes = request.form["minutes"]
-        newfit = Fitness(date=thisdate, summary=thissummary, type_id=thistype_id, \
-                      miles=thismiles, stats=thisstats, minutes=thisminutes)
+        newfit = Fitness(date=thisdate, summary=thissummary, type_id=thistype_id, miles=thismiles, stats=thisstats,
+                         minutes=thisminutes)
         thisuser = request.form.getlist("username")
         for user in thisuser:
-            print ("this user:", thisuser)
+            print("this user:", thisuser)
             user = User.query.filter_by(username=user).first()
             newfit.users.append(user)
         if thisstory is None or thisstory == "" or thisstory == "None":
@@ -206,7 +229,8 @@ def newitem():
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
         users = [value for (value,) in User.query.with_entities(User.username).all()]
         typename = "Walk"
-        return render_template('newitem.html', title='New item', today=today, stypes=stypes, typename=typename, users=users)
+        return render_template('newitem.html', title='New item', today=today, stypes=stypes, typename=typename,
+                               users=users)
 
 
 @app.route('/queries', methods=["POST", "GET"])
@@ -214,43 +238,55 @@ def queries():
     if request.method == "POST":
         qname = request.form["query"]
         if qname == "top_climbs":
-            items = Fitness.query.outerjoin(Fitstory).with_entities(Fitness.id, Fitness.date, \
-                       Fitness.summary, Fitness.miles, Fitness.stats, Fitness.minutes, \
-                       Fitstory.storydet).filter(Fitness.type_id==5) \
-                       .order_by(desc(Fitness.stats)).limit(10).all()
+            items = Fitness.query.outerjoin(Fitstory).with_entities(
+                Fitness.id, Fitness.date,
+                Fitness.summary, Fitness.miles, Fitness.stats,
+                Fitness.minutes,
+                Fitstory.storydet).filter(Fitness.type_id == 5).order_by(desc(Fitness.stats)).limit(10).all()
             return render_template('queries.html', title=qname, items=items)
         elif qname == "longest_walks":
-            items = Fitness.query.outerjoin(Fitstory).with_entities(Fitness.id, Fitness.date, \
-                       Fitness.summary, Fitness.miles, Fitness.stats, Fitness.minutes, \
-                       Fitstory.storydet).filter(Fitness.type_id==5). \
-                       order_by(desc(Fitness.miles)).limit(10).all()
+            items = Fitness.query.outerjoin(Fitstory).with_entities(
+                Fitness.id, Fitness.date,
+                Fitness.summary, Fitness.miles, Fitness.stats,
+                Fitness.minutes,
+                Fitstory.storydet).filter(Fitness.type_id == 5).order_by(desc(Fitness.miles)).limit(10).all()
             return render_template('queries.html', title=qname, items=items)
         elif qname == "miles_walked_per_year":
-            milesh = Fitness.query.with_entities(func.year(Fitness.date).label("year"), \
-                      func.sum(Fitness.miles).label("miles")).filter(Fitness.users.any(User.id==2), \
-                      Fitness.type_id==5).group_by(func.year(Fitness.date)).all()
-            milesd = Fitness.query.with_entities(func.year(Fitness.date).label("year"), \
-                      func.sum(Fitness.miles).label("miles")).filter(Fitness.users.any(User.id==1), \
-                      Fitness.type_id==5).group_by(func.year(Fitness.date)).all()
-            totalh = Fitness.query.with_entities(func.sum(Fitness.miles).label("miles")).filter \
-                    (Fitness.users.any(User.id==2), Fitness.type_id==5).first()
-            totald = Fitness.query.with_entities(func.sum(Fitness.miles).label("miles")).filter \
-                    (Fitness.users.any(User.id==1), Fitness.type_id==5).first()
-            return render_template('querym.html', title=qname, milesh=milesh, milesd=milesd, totalh=totalh, totald=totald)
+            milesh = Fitness.query.with_entities(
+                func.year(Fitness.date).label("year"),
+                func.sum(Fitness.miles).label("miles")).filter(
+                Fitness.users.any(User.id == 2),
+                Fitness.type_id == 5).group_by(func.year(Fitness.date)).all()
+            milesd = Fitness.query.with_entities(
+                func.year(Fitness.date).label("year"),
+                func.sum(Fitness.miles).label("miles")).filter(
+                Fitness.users.any(User.id == 1),
+                Fitness.type_id == 5).group_by(func.year(Fitness.date)).all()
+            totalh = Fitness.query.with_entities(func.sum(Fitness.miles).label("miles")).filter(
+                Fitness.users.any(User.id == 2), Fitness.type_id == 5).first()
+            totald = Fitness.query.with_entities(func.sum(Fitness.miles).label("miles")).filter(
+                Fitness.users.any(User.id == 1), Fitness.type_id == 5).first()
+            return render_template('querym.html', title=qname, milesh=milesh, milesd=milesd, totalh=totalh,
+                                   totald=totald)
         elif qname == "fastest_runs":
-            items = Fitness.query.outerjoin(Fitstory).with_entities(Fitness.id, Fitness.date, \
-                       Fitness.summary, Fitness.miles, Fitness.stats, Fitness.minutes, \
-                       Fitstory.storydet).filter(Fitness.type_id==3). \
-                       order_by(Fitness.minutes).limit(10).all()
+            items = Fitness.query.outerjoin(Fitstory).with_entities(
+                Fitness.id, Fitness.date,
+                Fitness.summary, Fitness.miles, Fitness.stats,
+                Fitness.minutes,
+                Fitstory.storydet).filter(Fitness.type_id == 3).order_by(Fitness.minutes).limit(10).all()
             return render_template('queries.html', title=qname, items=items)
         else:
             qname = "No valid query selected"
-            items =[]
+            items = []
             return render_template('queries.html', title=qname, items=items)
     else:
-        items = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(Fitness.id, Fitness.date, \
-                   Typefit.typedet, Fitness.summary, Fitness.miles, Fitness.stats, Fitness.minutes, \
-                   Fitstory.storydet).filter(Fitness.type_id==5).order_by(desc(Fitness.date)).limit(50).all()
+        items = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
+            Fitness.id, Fitness.date,
+            Typefit.typedet, Fitness.summary,
+            Fitness.miles, Fitness.stats,
+            Fitness.minutes,
+            Fitstory.storydet).filter(
+            Fitness.type_id == 5).order_by(desc(Fitness.date)).limit(50).all()
         return render_template('queries.html', title="all walks", items=items)
 
 
@@ -288,34 +324,39 @@ def recentstats():
     deetotm = get_total(1, monthago, fit_query_type)
     deetotw = get_total(1, weekago, fit_query_type)
     deetotytd = get_total(1, yearstart, fit_query_type)
-    hezpwy = round(heztoty/52, 2) if heztoty else 0.00
-    hezpwm3 = round(heztotm3*4/52, 2) if heztotm3 else 0.00
-    hezpwm = round(heztotm*12/52, 2) if heztotm else 0.00
-    hezpwytd = round(heztotytd*7/daysytd, 2) if heztotytd else 0.00
-    deepwy = round(deetoty/52, 2) if deetoty else 0.00
-    deepwm3 = round(deetotm3*4/52, 2) if deetotm3 else 0.00
-    deepwm = round(deetotm*12/52, 2) if deetotm else 0.00
-    deepwytd = round(deetotytd*7/daysytd, 2) if deetotytd else 0.00
-    return render_template('recentstats.html', title=qname, heztoty=heztoty, heztotm3=heztotm3, heztotm=heztotm, \
-        heztotw=heztotw, heztotytd=heztotytd, hezpwy=hezpwy, hezpwm3=hezpwm3, hezpwm=hezpwm, hezpwytd=hezpwytd, \
-        deetoty=deetoty, deetotm3=deetotm3, deetotm=deetotm, deetotw=deetotw, deetotytd=deetotytd, deepwy=deepwy, \
-        deepwm3=deepwm3, deepwm=deepwm, deepwytd=deepwytd)
+    hezpwy = round(heztoty / 52, 2) if heztoty else 0.00
+    hezpwm3 = round(heztotm3 * 4 / 52, 2) if heztotm3 else 0.00
+    hezpwm = round(heztotm * 12 / 52, 2) if heztotm else 0.00
+    hezpwytd = round(heztotytd * 7 / daysytd, 2) if heztotytd else 0.00
+    deepwy = round(deetoty / 52, 2) if deetoty else 0.00
+    deepwm3 = round(deetotm3 * 4 / 52, 2) if deetotm3 else 0.00
+    deepwm = round(deetotm * 12 / 52, 2) if deetotm else 0.00
+    deepwytd = round(deetotytd * 7 / daysytd, 2) if deetotytd else 0.00
+    return render_template('recentstats.html', title=qname, heztoty=heztoty, heztotm3=heztotm3, heztotm=heztotm,
+                           heztotw=heztotw, heztotytd=heztotytd, hezpwy=hezpwy, hezpwm3=hezpwm3, hezpwm=hezpwm,
+                           hezpwytd=hezpwytd,
+                           deetoty=deetoty, deetotm3=deetotm3, deetotm=deetotm, deetotw=deetotw, deetotytd=deetotytd,
+                           deepwy=deepwy,
+                           deepwm3=deepwm3, deepwm=deepwm, deepwytd=deepwytd)
+
 
 def get_total(User_Id, Start_Date, Fit_Id):
     User_Id = User_Id
     Start_Date = Start_Date
     Fit_Id = Fit_Id
     if Fit_Id == 9:
-        total = Fitness.query.with_entities(func.sum(Fitness.stats).label("units")).filter \
-                (Fitness.users.any(User.id==User_Id), Fitness.date >= Start_Date, Fitness.type_id==Fit_Id).first()[0]
+        total = Fitness.query.with_entities(func.sum(Fitness.stats).label("units")).filter(
+            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date, Fitness.type_id == Fit_Id).first()[0]
     elif Fit_Id == 99:
-        total = Fitness.query.with_entities(func.sum(Fitness.miles)).filter \
-                (Fitness.users.any(User.id==User_Id), Fitness.date >= Start_Date, or_(Fitness.type_id==3, Fitness.type_id==5)).first()[0]
+        total = Fitness.query.with_entities(func.sum(Fitness.miles)).filter(
+            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date,
+            or_(Fitness.type_id == 3, Fitness.type_id == 5)).first()[0]
     else:
-        total = Fitness.query.with_entities(func.sum(Fitness.miles)).filter \
-                (Fitness.users.any(User.id==User_Id), Fitness.date >= Start_Date, Fitness.type_id==Fit_Id).first()[0]
+        total = Fitness.query.with_entities(func.sum(Fitness.miles)).filter(
+            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date, Fitness.type_id == Fit_Id).first()[0]
     return total
-               
+
+
 @app.route('/register', methods=['GET', 'POST'])
 def register():
     if current_user.is_authenticated:
@@ -336,7 +377,7 @@ def replace_users(dictum, key_to_find, definition):
         if key == key_to_find:
             current_dict[key] = definition
 
-        
+
 @app.route('/reset_password_request', methods=['GET', 'POST'])
 def reset_password_request():
     if current_user.is_authenticated:
@@ -374,4 +415,3 @@ def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
     return render_template('user.html', user=user)
-

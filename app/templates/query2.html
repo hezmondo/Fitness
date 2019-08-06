@@ -2,7 +2,7 @@
 {% extends 'base.html' %}
 
 {% block content %}
-    <form method="post" "name" = target>
+    <form method="post" name="target">
 		<br />
 		<div class="form-row">
 			<div class="col-sm-4">
@@ -28,7 +28,7 @@
 			</thead>
 			<tbody>
 			{% for milesh in milesh %}
-				<tr id={{ milesh.year }}>
+				<tr id="{{ milesh.year }}">
 					<td style="width: 33.00%">{{ "Hez" }}</td>
 					<td style="width: 33.00%"> {{milesh.year }} </td>
 					<td style="width: 34.00%"> {{milesh.miles }} </td>

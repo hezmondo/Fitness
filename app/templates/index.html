@@ -37,7 +37,8 @@
 			<thead>
 				<tr>
 					<th style="width: 10.00%">date</th>
-					<th style="width: 6.00%">username</th>
+					<!--<th style="width: 6.00%">username</th>-->
+					<th style="width: 6.00%">usernames</th>
 					<th style="width: 16.00%">summary</th>
 					<th style="width: 40.00%">details</th>
 					<th style="width: 6.00%">miles</th>
@@ -51,7 +52,14 @@
 			{% for item in items %}
 				<tr id="{{ item.id }}">
 					<td style="width: 10.00%">{{ item.date }}</td>
-					<td style="width: 6.00%">{{ item.username }}</td>
+					<!--<td style="width: 6.00%">{{ item.username }}</td>-->
+					<td style="width: 6.00%">
+					{% for username in list_usernames %}
+						{% if username.id == item.id %}
+						<div>{{ username.username }}</div>
+						{% endif %}
+					{% endfor %}
+					</td>
 					<td style="width: 16.00%"> {{ item.summary }} </td>
 					<td style="width: 40.00%"> {{ item.storydet }} </td>
 					<td style="width: 6.00%"> {{ item.miles }} </td>

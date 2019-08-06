@@ -145,10 +145,9 @@ def edit_profile():
 def index():
     if request.method == "POST":
         seltype = request.form["filter"]
-        items = Fitness.query.join(Typefit).join(user_fit).join(User).outerjoin(Fitstory).with_entities(
+        items = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
             Fitness.id,
             Fitness.date,
-            User.username,
             Typefit.typedet,
             Fitness.summary,
             Fitness.miles,
@@ -157,12 +156,11 @@ def index():
             Fitstory.storydet).filter(
             Typefit.typedet.ilike('%{}%'.format(seltype))).order_by(desc(Fitness.date)).limit(50).all()
         #        print (items)
-        return render_template('index.html', title=seltype, items=items)
+        title = seltype
     else:
-        items = Fitness.query.join(Typefit).join(user_fit).join(User).outerjoin(Fitstory).with_entities(
+        items = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
             Fitness.id,
             Fitness.date,
-            User.username,
             Typefit.typedet,
             Fitness.summary,
             Fitness.miles,
@@ -170,7 +168,15 @@ def index():
             Fitness.minutes,
             Fitstory.storydet).order_by(
             desc(Fitness.date)).limit(50).all()
-        return render_template('index.html', title='All items', items=items)
+        title = 'All items'
+
+    fitness_ids = [item[0] for item in items]
+    list_usernames = Fitness.query.join(user_fit).join(User).with_entities(
+        Fitness.id,
+        User.username).filter(Fitness.id.in_(fitness_ids)).order_by(
+        desc(Fitness.id), User.username).all()
+
+    return render_template('index.html', title=title, items=items, list_usernames=list_usernames)
 
 
 @app.route('/login', methods=['GET', 'POST'])

@@ -4,7 +4,7 @@ import datetime
 from dateutil.relativedelta import relativedelta
 from flask import render_template, flash, redirect, url_for, request
 from flask_login import login_user, logout_user, current_user, login_required
-from sqlalchemy import desc, extract, func, literal, and_, or_
+from sqlalchemy import asc, desc, extract, func, literal, and_, or_
 from werkzeug.urls import url_parse
 
 from app import app, db
@@ -155,7 +155,6 @@ def index():
             Fitness.minutes,
             Fitstory.storydet).filter(
             Typefit.typedet.ilike('%{}%'.format(seltype))).order_by(desc(Fitness.date)).limit(50).all()
-        #        print (items)
         title = seltype
     else:
         items = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
@@ -170,11 +169,14 @@ def index():
             desc(Fitness.date)).limit(50).all()
         title = 'All items'
 
+    # to get the list of usernames for each item:
+    # 1. get a list of all the `Fitness.id`s returned by the query
     fitness_ids = [item[0] for item in items]
+    # 2. get a list of `User.username`s by joining via `user_fit` onto `User`s
     list_usernames = Fitness.query.join(user_fit).join(User).with_entities(
         Fitness.id,
         User.username).filter(Fitness.id.in_(fitness_ids)).order_by(
-        desc(Fitness.id), User.username).all()
+        desc(Fitness.id), asc(User.username)).all()
 
     return render_template('index.html', title=title, items=items, list_usernames=list_usernames)
 

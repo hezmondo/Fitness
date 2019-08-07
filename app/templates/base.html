@@ -1,5 +1,4 @@
 {% extends 'bootstrap/base.html' %}
-<!doctype html>
 <html lang="en">
 	<head>
 	  <!-- Required meta tags -->
@@ -41,28 +40,26 @@
 		</nav>
 	{% endblock %}
 	{% block content %}
-		<body>
-			<div class="container">
-				<div class="row align-items-center">
-					<div class="col">
-						<div class="justify-content-center">
-							<style type="text/css">
-								/* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
-								body { background-color: rgba(205, 219, 217, 0.9) !important; }
-							</style>
-							{% with messages = get_flashed_messages() %}
-							{% if messages %}
-								{% for message in messages %}
-								<div class="alert alert-info" role="alert">{{ message }}</div>
-								{% endfor %}
-							{% endif %}
-							{% endwith %}
-							{# application content needs to be provided in the app_content block #}
-							{% block app_content %}{% endblock %}
-						</div>
+		<div class="container">
+			<div class="row align-items-center">
+				<div class="col">
+					<div class="justify-content-center">
+						<style type="text/css">
+							/* Adding !important forces the browser to overwrite the default style applied by Bootstrap */
+							body { background-color: rgba(205, 219, 217, 0.9) !important; }
+						</style>
+						{% with messages = get_flashed_messages() %}
+						{% if messages %}
+							{% for message in messages %}
+							<div class="alert alert-info" role="alert">{{ message }}</div>
+							{% endfor %}
+						{% endif %}
+						{% endwith %}
+						{# application content needs to be provided in the app_content block #}
+						{% block app_content %}{% endblock %}
 					</div>
 				</div>
 			</div>
-		</body>
+		</div>
 	{% endblock %}
 </html>

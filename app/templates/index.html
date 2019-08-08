@@ -53,10 +53,8 @@
             <td>{{ item.date }}</td>
             <td>
                 <ul style="list-style: none; padding-left: 0;">
-                    {% for username in list_usernames %}
-                    {% if username.id == item.id %}
+                    {% for username in dict_usernames[item.id] %}
                     <li>{{ username.username }}</li>
-                    {% endif %}
                     {% endfor %}
                 </ul>
             </td>

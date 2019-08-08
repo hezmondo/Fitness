@@ -176,8 +176,14 @@ def index():
         Fitness.id,
         User.username).filter(Fitness.id.in_(fitness_ids)).order_by(
         desc(Fitness.id), asc(User.username)).all()
+    # 3. create a dict indexed by `Fitness.id` for quick look-up
+    dict_usernames = dict()
+    for id in fitness_ids:
+        dict_usernames[id] = []
+    for row in list_usernames:
+        dict_usernames[row[0]].append(row)
 
-    return render_template('index.html', title=title, items=items, list_usernames=list_usernames)
+    return render_template('index.html', title=title, items=items, dict_usernames=dict_usernames)
 
 
 @app.route('/login', methods=['GET', 'POST'])

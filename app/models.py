@@ -14,8 +14,10 @@ user_fit = db.Table(
     db.Column('user_id', db.Integer, db.ForeignKey('user.id'))
 )
 
+
 class Fitness(db.Model):
     __tablename__ = 'fitness'
+
     id = db.Column(db.Integer, primary_key=True)
     date = db.Column(db.Date)
     summary = db.Column(db.String(90))
@@ -23,7 +25,7 @@ class Fitness(db.Model):
     miles = db.Column(db.Numeric(8,2))
     stats = db.Column(db.Numeric(8,2))
     minutes = db.Column(db.Numeric(8,2))
-    story_fit = db.relationship('Fitstory', backref = 'fitness', lazy = 'dynamic')
+    story_fit = db.relationship('Fitstory', backref='fitness', lazy='dynamic')
     users = db.relationship("User", secondary=user_fit)
     # stars = db.relationship(
         # 'Fitness', secondary=user_fit,
@@ -31,20 +33,10 @@ class Fitness(db.Model):
         # secondaryjoin=(user_fit.c.fitness_id == id),
         # backref=db.backref('user_fit', lazy='dynamic'), lazy='dynamic')    
 
-    def get_shortname(self):
-        user1 = users[0].username
-        user2 = users[1].username
-        if user1 == "Dee" and user2 == "Hez":
-            shortname = "HezDee"
-        elif user1 == "Dee":
-            shortname = "Dee"
-        else:
-            shortname = "Hez"
-        return shortname
-            
 
 class Fitstory(db.Model):
     __tablename__ = 'fitstory'
+
     id = db.Column(db.Integer, primary_key=True)
     storydet = db.Column(db.String(990))    
     fit_id = db.Column(db.Integer, db.ForeignKey('fitness.id'))
@@ -52,12 +44,15 @@ class Fitstory(db.Model):
         
 class Typefit(db.Model):
     __tablename__ = 'typefit'
+
     id = db.Column(db.Integer, primary_key=True)
     typedet = db.Column(db.String(45))
     fitness_typefit = db.relationship('Fitness', backref = 'typefit', lazy = 'dynamic')
 
 
 class User(UserMixin, db.Model):
+    __tablename__ = 'user'
+
     id = db.Column(db.Integer, primary_key=True)
     username = db.Column(db.String(64), index=True, unique=True)
     email = db.Column(db.String(120), index=True, unique=True)
@@ -69,8 +64,7 @@ class User(UserMixin, db.Model):
 
     def avatar(self, size):
         digest = md5(self.email.lower().encode('utf-8')).hexdigest()
-        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(
-            digest, size)
+        return 'https://www.gravatar.com/avatar/{}?d=identicon&s={}'.format(digest, size)
 
     def set_password(self, password):
         self.password_hash = generate_password_hash(password)
@@ -86,8 +80,7 @@ class User(UserMixin, db.Model):
     @staticmethod
     def verify_reset_password_token(token):
         try:
-            id = jwt.decode(token, app.config['SECRET_KEY'],
-                            algorithms=['HS256'])['reset_password']
+            id = jwt.decode(token, app.config['SECRET_KEY'], algorithms=['HS256'])['reset_password']
         except:
             return
         return User.query.get(id)

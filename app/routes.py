@@ -135,8 +135,7 @@ def edit_profile():
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
-    return render_template('edit_profile.html', title='Edit Profile',
-                           form=form)
+    return render_template('signin/edit_profile.html', title='Edit Profile', form=form)
 
 
 @app.route('/', methods=['GET', 'POST'])
@@ -196,7 +195,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
-    return render_template('login.html', title='Sign In', form=form)
+    return render_template('signin/login.html', title='Sign In', form=form)
 
 
 @app.route('/logout')
@@ -377,7 +376,7 @@ def register():
         db.session.commit()
         flash('Congratulations, you are now a registered user!')
         return redirect(url_for('login'))
-    return render_template('register.html', title='Register', form=form)
+    return render_template('signin/register.html', title='Register', form=form)
 
 
 def replace_users(dictum, key_to_find, definition):
@@ -397,8 +396,7 @@ def reset_password_request():
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')
         return redirect(url_for('login'))
-    return render_template('reset_password_request.html',
-                           title='Reset Password', form=form)
+    return render_template('signin/reset_password_request.html', title='Reset Password', form=form)
 
 
 @app.route('/reset_password/<token>', methods=['GET', 'POST'])
@@ -414,7 +412,7 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('login'))
-    return render_template('reset_password.html', form=form)
+    return render_template('signin/reset_password.html', form=form)
 
 
 @app.route('/user/<username>')
@@ -422,4 +420,4 @@ def reset_password(token):
 def user(username):
     user = User.query.filter_by(username=username).first_or_404()
     page = request.args.get('page', 1, type=int)
-    return render_template('user.html', user=user)
+    return render_template('signin/user.html', user=user)

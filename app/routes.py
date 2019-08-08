@@ -34,18 +34,16 @@ def cloneitem(id):
         thisminutes = request.form["minutes"]
         newfit = Fitness(date=thisdate, summary=thissummary, type_id=thistype_id, miles=thismiles, stats=thisstats,
                          minutes=thisminutes)
+        newfit.users.clear()
         users_set = request.form.getlist("username")
         for user in users_set:
             user = User.query.filter_by(username=user).first()
             newfit.users.append(user)
-        if thisstory is None or thisstory == "" or thisstory == "None":
-            db.session.add(newfit)
-            db.session.commit()
-        else:
+        if thisstory and thisstory != "None":
             newstory = Fitstory(storydet=thisstory)
             newfit.story_fit.append(newstory)
-            db.session.add(newfit)
-            db.session.commit()
+        db.session.add(newfit)
+        db.session.commit()
         return redirect('/index')
     else:
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
@@ -53,7 +51,6 @@ def cloneitem(id):
         users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(
             Fitness.id == id).all()]
         users_all = [value for (value,) in User.query.with_entities(User.username).order_by(User.username).all()]
-        print("these users:", users_set)
         item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
             Fitness.id, Fitness.date,
             Typefit.typedet, Fitness.summary,
@@ -92,16 +89,15 @@ def edititem(id):
         update_item.stats = request.form["stats"]
         update_item.minutes = request.form["minutes"]
         thisstory = request.form["storydet"]
+        update_item.users.clear()
         users_set = request.form.getlist("username")
         for user in users_set:
             user = User.query.filter_by(username=user).first()
             update_item.users.append(user)
-        if thisstory is None or thisstory == "" or thisstory == "None":
-            db.session.commit()
-        else:
+        if thisstory and thisstory != "None":
             update_story = Fitstory.query.filter(Fitstory.fit_id == ('{}'.format(id))).first()
             update_story.storydet = thisstory
-            db.session.commit()
+        db.session.commit()
         return redirect('/index')
     else:
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
@@ -109,7 +105,6 @@ def edititem(id):
         users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(
             Fitness.id == id).all()]
         users_all = [value for (value,) in User.query.with_entities(User.username).order_by(User.username).all()]
-        print("these users:", users_set)
         item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
             Fitness.id, Fitness.date,
             Typefit.typedet, Fitness.summary,
@@ -224,26 +219,23 @@ def newitem():
         thisminutes = request.form["minutes"]
         newfit = Fitness(date=thisdate, summary=thissummary, type_id=thistype_id, miles=thismiles, stats=thisstats,
                          minutes=thisminutes)
+        newfit.users.clear()
         thisuser = request.form.getlist("username")
         for user in thisuser:
-            print("this user:", thisuser)
             user = User.query.filter_by(username=user).first()
             newfit.users.append(user)
-        if thisstory is None or thisstory == "" or thisstory == "None":
-            db.session.add(newfit)
-            db.session.commit()
-        else:
+        if thisstory and thisstory != "None":
             newstory = Fitstory(storydet=thisstory)
             newfit.story_fit.append(newstory)
-            db.session.add(newfit)
-            db.session.commit()
+        db.session.add(newfit)
+        db.session.commit()
         return redirect('/index')
     else:
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
-        users = [value for (value,) in User.query.with_entities(User.username).all()]
+        users_all = [value for (value,) in User.query.with_entities(User.username).all()]
         typename = "Walk"
         return render_template('newitem.html', title='New item', today=today, stypes=stypes, typename=typename,
-                               users=users)
+                               users=users_all)
 
 
 @app.route('/queries', methods=["POST", "GET"])

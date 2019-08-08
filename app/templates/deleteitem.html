@@ -13,7 +13,7 @@
 			</div>
             <div class="col-sm3">
 				<label for="stype">Type:</label>
-				<select class="form-control" name="stype" method="GET" action="/">
+				<select class="form-control" name="stype">
 				  <option value="{{typename}}" selected>{{typename}}</option>
 				  {% for stype in stypes[0:] %}
 					<option value="{{stype}}">{{stype}}</option>
@@ -22,7 +22,7 @@
 			</div>
 			<div class="col-sm-3">
 				<label for="user">Participants:</label>
-				<select class="form-control" name="user" method="GET" action="/">
+				<select class="form-control" name="user">
 				  <option value="{{whoname}}" selected>{{whoname}}</option>
 				  {% for user in users[0:] %}
 					<option value="{{user}}">{{user}}</option>

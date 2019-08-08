@@ -9,7 +9,7 @@
 			</div>
             <div class="form-group col-md-4">
 				<label for="stype">Type:</label>
-				<select class="form-control" name="stype" method="GET" action="/">
+				<select class="form-control" name="stype">
 				  <option value="{{typename}}" selected>{{typename}}</option>
 				  {% for stype in stypes[0:] %}
 					<option value="{{stype}}">{{stype}}</option>
@@ -18,11 +18,22 @@
 			</div>
 			<div class="form-group col-md-4">
 				<label for="user">Participants:</label>
-				<select multiple class="form-control" name="username" method="GET" action="/">
-				  {% for user in users[0:] %}
-					<option value="{{user}}">{{user}}</option>
-				  {% endfor %}
-				</select>			
+				<!--
+				<select multiple class="form-control" name="username">
+					{% for user in users_all %}
+						<option value="{{user}}">{{user}}</option>
+					{% endfor %}
+				</select>
+				-->
+				<!-- -->
+				<div class="form-control" style="height: auto;">
+					{% for user in users_all %}
+					<div class="checkbox">
+                        <label><input type="checkbox" name="username" value="{{ user }}">{{ user }}</label>
+                    </div>
+					{% endfor %}
+				</div>
+				<!-- -->
 			</div>
 		</div>
 		<div class="form-row">
@@ -34,7 +45,7 @@
 		<div class="form-row">
 			<div class="form-group col-md-12">
 				<label for="storydet">Details:</label>
-				<textarea class="form-control" rows="8" id="storydet" name="storydet" value=""></textarea>
+				<textarea class="form-control" rows="8" id="storydet" name="storydet"></textarea>
 			</div>
 		</div>
 		<div class="form-row">

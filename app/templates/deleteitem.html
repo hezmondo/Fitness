@@ -15,7 +15,7 @@
 				<label for="stype">Type:</label>
 				<select class="form-control" name="stype">
 				  <option value="{{typename}}" selected>{{typename}}</option>
-				  {% for stype in stypes[0:] %}
+				  {% for stype in stypes %}
 					<option value="{{stype}}">{{stype}}</option>
 				  {% endfor %}
 				</select>			
@@ -24,7 +24,7 @@
 				<label for="user">Participants:</label>
 				<select class="form-control" name="user">
 				  <option value="{{whoname}}" selected>{{whoname}}</option>
-				  {% for user in users[0:] %}
+				  {% for user in users %}
 					<option value="{{user}}">{{user}}</option>
 				  {% endfor %}
 				</select>			

@@ -1,0 +1,33 @@
+<!-- macros.html -->
+
+<!-- Common macro definitions to be used from other templates -->
+
+<!-- multiselect_as_select(): implement a multiple choice select via <select> element -->
+{% macro multiselect_as_select(name, items, items_selected=None) -%}
+<select multiple class="form-control" name="{{ name }}">
+    {% for item in items %}
+    {% set selected = 'selected' if item in items_selected else '' %}
+    <option value="{{item}}" {{selected}}>{{item}}</option>
+    {% endfor %}
+</select>
+{%- endmacro %}
+
+<!-- multiselect_as_checkboxes(): implement a multiple choice select via <input type="checkbox"> elements -->
+{% macro multiselect_as_checkboxes(name, items, items_selected=None) -%}
+<div class="form-control" style="height: auto;">
+    {% for item in items %}
+    {% set selected = 'checked' if item in items_selected else '' %}
+    <div class="checkbox">
+        <label><input type="checkbox" name="{{ name }}" value="{{ item }}" {{selected}}>{{ item }}</label>
+    </div>
+    {% endfor %}
+</div>
+{%- endmacro %}
+
+<!-- multiselect(): implement a multiple choice select via preferred method -->
+{% macro multiselect(name, items, items_selected=None) -%}
+<!-- comment/uncomment whichever preferred -->
+<!--{{ multiselect_as_select(name, items, items_selected) }}-->
+{{ multiselect_as_checkboxes(name, items, items_selected) }}
+{%- endmacro %}
+

@@ -101,7 +101,6 @@ def edititem(id):
         return redirect('/index')
     else:
         stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
-        thisitem = Fitness.query.get(id)
         users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(
             Fitness.id == id).all()]
         users_all = [value for (value,) in User.query.with_entities(User.username).order_by(User.username).all()]
@@ -235,7 +234,7 @@ def newitem():
         users_all = [value for (value,) in User.query.with_entities(User.username).all()]
         typename = "Walk"
         return render_template('newitem.html', title='New item', today=today, stypes=stypes, typename=typename,
-                               users=users_all)
+                               users_all=users_all, users_set=users_all[1])
 
 
 @app.route('/queries', methods=["POST", "GET"])

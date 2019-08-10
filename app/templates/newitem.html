@@ -10,17 +10,12 @@
 				<input type ="date" name="itemdate" value="{{ today }}" class="form-control">	  
 			</div>
             <div class="form-group col-md-4">
-				<label for="stype">Type:</label>
-				<select class="form-control" name="stype">
-				  <option value="{{typename}}" selected>{{typename}}</option>
-				  {% for stype in stypes %}
-					<option value="{{stype}}">{{stype}}</option>
-				  {% endfor %}
-				</select>			
-			</div>
+                <label for="stype">Type:</label>
+                {{ macros.combobox_single(name="typename", items=stypes, item_selected=typename) }}
+            </div>
 			<div class="form-group col-md-4">
 				<label for="username">Participants:</label>
-                {{ macros.multiselect(name="username", items=users_all, items_selected=users_set) }}
+                {{ macros.combobox_multi_checkboxes(name="username", items=users_all, items_selected=users_set) }}
 			</div>
 		</div>
 		<div class="form-row">

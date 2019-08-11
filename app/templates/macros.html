@@ -4,10 +4,10 @@
 
 
 <!-- combobox allowing only one selection showing just the item selected -->
-{% macro combobox_single(name, items, item_selected=None) -%}
+{% macro combobox_single(name, items, items_selected=None) -%}
 <select class="form-control" name="{{ name }}">
-	<option value="{{item_selected}}" selected>{{item_selected}}</option>
     {% for item in items %}
+    {% set selected = 'selected' if item in items_selected else '' %}
     <option value="{{item}}" {{selected}}>{{item}}</option>
     {% endfor %}
 </select>

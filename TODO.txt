@@ -1,0 +1,3 @@
+Once we have conditional formatting, we need to try to use a common html file and suppress buttons when appropriate.
+
+

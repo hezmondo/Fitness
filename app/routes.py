@@ -26,11 +26,15 @@ def cloneitem(id):
         item = savechanges(id, "clone")
         db.session.add(item)
         db.session.commit()
+
+        # `rent.id` gets updated to hold the INSERTed id
+        # new_id = rent.id
+
         return redirect(url_for('index'))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "clone")
 
-    return render_template('cloneitem.html', title='clone', item=item, stypes=stypes, users_set=users_set, today=today,
+    return render_template('cloneitem.html', action="clone", title='clone', item=item, stypes=stypes, users_set=users_set, today=today,
                            users_all=users_all, typename=typename, )
 
 
@@ -42,6 +46,7 @@ def deleteitem(id):
         db.session.delete(delete_story)
     db.session.delete(delete_item)
     db.session.commit()
+
     return redirect(url_for('index'))
 
 
@@ -55,7 +60,7 @@ def edititem(id):
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "edit")
 
-    return render_template('edititem.html', title='edit', stypes=stypes, users_set=users_set, today=today,
+    return render_template('edititem.html', action="edit", title='edit', stypes=stypes, users_set=users_set, today=today,
                            users_all=users_all, typename=typename, item=item)
 
 
@@ -70,6 +75,7 @@ def edit_profile():
         return redirect(url_for('edit_profile'))
     elif request.method == 'GET':
         form.username.data = current_user.username
+
     return render_template('signin/edit_profile.html', title='Edit Profile', form=form)
 
 
@@ -136,6 +142,7 @@ def login():
         if not next_page or url_parse(next_page).netloc != '':
             next_page = url_for('index')
         return redirect(next_page)
+
     return render_template('signin/login.html', title='Sign In', form=form)
 
 
@@ -151,6 +158,9 @@ def newitem():
         item = savechanges(id, "new")
         db.session.add(item)
         db.session.commit()
+        # `rent.id` gets updated to hold the INSERTed id
+        # new_id = rent.id
+
         return redirect(url_for('index'))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "new")
@@ -169,6 +179,7 @@ def queries():
                 Fitness.summary, Fitness.miles, Fitness.stats,
                 Fitness.minutes,
                 Fitstory.storydet).filter(Fitness.type_id == 5).order_by(desc(Fitness.stats)).limit(10).all()
+
             return render_template('queries.html', title=qname, items=items)
         elif qname == "longest_walks":
             items = Fitness.query.outerjoin(Fitstory).with_entities(
@@ -177,6 +188,7 @@ def queries():
                 Fitness.minutes,
                 Fitstory.storydet).filter(Fitness.type_id == 5).order_by(desc(Fitness.miles)).limit(10).all()
             return render_template('queries.html', title=qname, items=items)
+
         elif qname == "miles_walked_per_year":
             milesh = Fitness.query.with_entities(
                 func.year(Fitness.date).label("year"),
@@ -192,6 +204,7 @@ def queries():
                 Fitness.users.any(User.id == 2), Fitness.type_id == 5).first()
             totald = Fitness.query.with_entities(func.sum(Fitness.miles).label("miles")).filter(
                 Fitness.users.any(User.id == 1), Fitness.type_id == 5).first()
+
             return render_template('querym.html', title=qname, milesh=milesh, milesd=milesd, totalh=totalh,
                                    totald=totald)
         elif qname == "fastest_runs":
@@ -200,10 +213,12 @@ def queries():
                 Fitness.summary, Fitness.miles, Fitness.stats,
                 Fitness.minutes,
                 Fitstory.storydet).filter(Fitness.type_id == 3).order_by(Fitness.minutes).limit(10).all()
+
             return render_template('queries.html', title=qname, items=items)
         else:
             qname = "No valid query selected"
             items = []
+
             return render_template('queries.html', title=qname, items=items)
     else:
         items = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
@@ -213,6 +228,7 @@ def queries():
             Fitness.minutes,
             Fitstory.storydet).filter(
             Fitness.type_id == 5).order_by(desc(Fitness.date)).limit(50).all()
+
         return render_template('queries.html', title="all walks", items=items)
 
 
@@ -236,7 +252,8 @@ def recentstats():
             fit_query_type = 99
         else:
             qname = "No valid query selected"
-            return render_template('recentstats.html', title=qname)
+
+        return render_template('recentstats.html', title=qname)
     else:
         qname = "walks"
         fit_query_type = 5
@@ -258,6 +275,7 @@ def recentstats():
     deepwm3 = round(deetotm3 * 4 / 52, 2) if deetotm3 else 0.00
     deepwm = round(deetotm * 12 / 52, 2) if deetotm else 0.00
     deepwytd = round(deetotytd * 7 / daysytd, 2) if deetotytd else 0.00
+
     return render_template('recentstats.html', title=qname, heztoty=heztoty, heztotm3=heztotm3, heztotm=heztotm,
                            heztotw=heztotw, heztotytd=heztotytd, hezpwy=hezpwy, hezpwm3=hezpwm3, hezpwm=hezpwm,
                            hezpwytd=hezpwytd,
@@ -266,8 +284,8 @@ def recentstats():
                            deepwm3=deepwm3, deepwm=deepwm, deepwytd=deepwytd)
 
 
-def savechanges(id, type):
-    if type == "edit":
+def savechanges(id, action):
+    if action == "edit":
         item = Fitness.query.get(id)
         story = Fitstory.query.filter(Fitstory.fit_id == ('{}'.format(id))).first()
     else:
@@ -292,11 +310,11 @@ def savechanges(id, type):
             item.story_fit.append(story)
     return item
 
-def getvalues(id, type):
+def getvalues(id, action):
     today = datetime.date.today()
     stypes = [value for (value,) in Typefit.query.with_entities(Typefit.typedet).all()]
     users_all = [value for (value,) in User.query.with_entities(User.username).order_by(User.username).all()]
-    if type == "clone" or type == "edit":
+    if action == "clone" or action == "edit":
         item = Fitness.query.join(Typefit).outerjoin(Fitstory).with_entities(
             Fitness.id, Fitness.date,
             Typefit.typedet, Fitness.summary,
@@ -309,10 +327,13 @@ def getvalues(id, type):
         users_set = [value for (value,) in User.query.join(user_fit).join(Fitness).with_entities(User.username).filter(
             Fitness.id == id).all()]
         typename = item.typedet
-    else:
+    elif action == "new":
         item = None
         users_set = users_all[1]
         typename = stypes[4]
+    else:
+        raise ValueError("getvalues(): Unrecognised value for 'action' (\"{}\")".format(action))
+
     return item, typename, stypes, users_all, users_set, today
 
 def get_total(User_Id, Start_Date, Fit_Id):
@@ -380,6 +401,7 @@ def reset_password(token):
         db.session.commit()
         flash('Your password has been reset.')
         return redirect(url_for('login'))
+
     return render_template('signin/reset_password.html', form=form)
 
 

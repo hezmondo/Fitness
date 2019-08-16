@@ -3,19 +3,18 @@
 <!-- Common macro definitions to be used from other templates -->
 
 
-<!-- combobox allowing only one selection showing just the item selected -->
-{% macro combobox_single(name, items, items_selected=None) -%}
+<!-- combobox(): implement a single choice select via <select> element -->
+{% macro combobox(name, items, item_selected=None) -%}
 <select class="form-control" name="{{ name }}">
     {% for item in items %}
-    {% set selected = 'selected' if item in items_selected else '' %}
+    {% set selected = 'selected' if item == item_selected else '' %}
     <option value="{{item}}" {{selected}}>{{item}}</option>
     {% endfor %}
 </select>
 {%- endmacro %}
 
-
 <!-- multiselect_as_select(): implement a multiple choice select via <select> element -->
-{% macro combobox_multi(name, items, items_selected=None) -%}
+{% macro multiselect_as_select(name, items, items_selected=None) -%}
 <select multiple class="form-control" name="{{ name }}">
     {% for item in items %}
     {% set selected = 'selected' if item in items_selected else '' %}
@@ -25,7 +24,7 @@
 {%- endmacro %}
 
 <!-- multiselect_as_checkboxes(): implement a multiple choice select via <input type="checkbox"> elements -->
-{% macro combobox_multi_checkboxes(name, items, items_selected=None) -%}
+{% macro multiselect_as_checkboxes(name, items, items_selected=None) -%}
 <div class="form-control" style="height: auto;">
     {% for item in items %}
     {% set selected = 'checked' if item in items_selected else '' %}
@@ -34,4 +33,11 @@
     </div>
     {% endfor %}
 </div>
+{%- endmacro %}
+
+<!-- multiselect(): implement a multiple choice select via preferred method -->
+{% macro multiselect(name, items, items_selected=None) -%}
+<!-- comment/uncomment whichever preferred -->
+<!--{{ multiselect_as_select(name, items, items_selected) }}-->
+{{ multiselect_as_checkboxes(name, items, items_selected) }}
 {%- endmacro %}

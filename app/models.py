@@ -25,6 +25,7 @@ class Fitness(db.Model):
     miles = db.Column(db.Numeric(8,2))
     stats = db.Column(db.Numeric(8,2))
     minutes = db.Column(db.Numeric(8,2))
+
     story_fit = db.relationship('Fitstory', backref='fitness', lazy='dynamic')
     users = db.relationship("User", secondary=user_fit)
     # stars = db.relationship(
@@ -47,6 +48,7 @@ class Typefit(db.Model):
 
     id = db.Column(db.Integer, primary_key=True)
     typedet = db.Column(db.String(45))
+
     fitness_typefit = db.relationship('Fitness', backref = 'typefit', lazy = 'dynamic')
 
 

@@ -26,22 +26,21 @@ def cloneitem(id):
         item = savechanges(id, "clone")
         db.session.add(item)
         db.session.commit()
-
         # `rent.id` gets updated to hold the INSERTed id
-        # new_id = rent.id
+        new_id = item.id
 
-        return redirect(url_for('index'))
+        return redirect('/edititem/{}'.format(new_id))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "clone")
 
-    return render_template('cloneitem.html', action="clone", title='clone', item=item, stypes=stypes, users_set=users_set, today=today,
-                           users_all=users_all, typename=typename, )
+    return render_template('edititem.html', action="clone", title='clone', item=item, stypes=stypes,
+                           today=today, typename=typename, users_all=users_all, users_set=users_set)
 
 
 @app.route('/deleteitem/<int:id>')
 def deleteitem(id):
     delete_item = Fitness.query.get(id)
-    delete_story = Fitstory.query.filter(Fitstory.fit_id == ('{}'.format(id))).first()
+    delete_story = Fitstory.query.filter(Fitstory.fit_id == id).one_or_none()
     if delete_story is not None:
         db.session.delete(delete_story)
     db.session.delete(delete_item)
@@ -56,12 +55,15 @@ def edititem(id):
         item = savechanges(id, "edit")
         db.session.add(item)
         db.session.commit()
-        return redirect(url_for('index'))
+        db.session.commit()
+
+        return redirect('/editrent/{}'.format(id))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "edit")
+        item.date = today
 
-    return render_template('edititem.html', action="edit", title='edit', stypes=stypes, users_set=users_set, today=today,
-                           users_all=users_all, typename=typename, item=item)
+    return render_template('edititem.html', action="edit", title='edit', item=item, stypes=stypes,
+                           today=today, typename=typename, users_all=users_all, users_set=users_set)
 
 
 @app.route('/edit_profile', methods=['GET', 'POST'])
@@ -133,7 +135,7 @@ def login():
         return redirect(url_for('index'))
     form = LoginForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(username=form.username.data).first()
+        user = User.query.filter_by(username=form.username.data).one_or_none()
         if user is None or not user.check_password(form.password.data):
             flash('Invalid username or password')
             return redirect(url_for('login'))
@@ -159,14 +161,19 @@ def newitem():
         db.session.add(item)
         db.session.commit()
         # `rent.id` gets updated to hold the INSERTed id
-        # new_id = rent.id
+        new_id = item.id
 
-        return redirect(url_for('index'))
+        return redirect('/edititem/{}'.format(new_id))
+
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "new")
+        item.date = today
+        item.miles = "0.00"
+        item.minutes = "0.00"
+        item.stats = "0.00"
 
-    return render_template('newitem.html', title='New item', today=today, stypes=stypes, typename=typename,
-                           users_all=users_all, users_set=users_set)
+    return render_template('edititem.html', action="new", title='New item', item=item, stypes=stypes,
+                            today=today, typename=typename, users_all=users_all, users_set=users_set)
 
 
 @app.route('/queries', methods=["POST", "GET"])
@@ -287,13 +294,15 @@ def recentstats():
 def savechanges(id, action):
     if action == "edit":
         item = Fitness.query.get(id)
-        story = Fitstory.query.filter(Fitstory.fit_id == ('{}'.format(id))).first()
+        story = Fitstory.query.filter(Fitstory.fit_id == id).one_or_none()
+        if story is None:
+            story = Fitstory()
     else:
         item = Fitness()
         story = Fitstory()
     item.date = request.form["itemdate"]
     type = request.form["stype"]
-    item.type_id = Typefit.query.with_entities(Typefit.id).filter(Typefit.typedet == type).first()[0]
+    item.type_id = Typefit.query.with_entities(Typefit.id).filter(Typefit.typedet == type).one_or_none()[0]
     item.summary = request.form["summary"]
     item.miles = request.form["miles"]
     item.stats = request.form["stats"]
@@ -302,7 +311,7 @@ def savechanges(id, action):
     item.users.clear()
     users_set = request.form.getlist("username")
     for user in users_set:
-        user = User.query.filter_by(username=user).first()
+        user = User.query.filter_by(username=user).one_or_none()
         item.users.append(user)
     if storydet and storydet != "None":
         story.storydet = storydet
@@ -320,7 +329,7 @@ def getvalues(id, action):
             Typefit.typedet, Fitness.summary,
             Fitness.miles, Fitness.stats,
             Fitness.minutes, Fitstory.storydet).filter(
-            Fitness.id == ('{}'.format(id))).first()
+            Fitness.id == id).one_or_none()
         if item is None:
             flash('N')
             return redirect(url_for('index'))
@@ -328,7 +337,7 @@ def getvalues(id, action):
             Fitness.id == id).all()]
         typename = item.typedet
     elif action == "new":
-        item = None
+        item = Fitness()
         users_set = users_all[1]
         typename = stypes[4]
     else:
@@ -342,7 +351,7 @@ def get_total(User_Id, Start_Date, Fit_Id):
     Fit_Id = Fit_Id
     if Fit_Id == 9:
         total = Fitness.query.with_entities(func.sum(Fitness.stats).label("units")).filter(
-            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date, Fitness.type_id == Fit_Id).first()[0]
+            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date, Fitness.type_id == Fit_Id).one_or_none()
     elif Fit_Id == 99:
         total = Fitness.query.with_entities(func.sum(Fitness.miles)).filter(
             Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date,
@@ -380,7 +389,7 @@ def reset_password_request():
         return redirect(url_for('index'))
     form = ResetPasswordRequestForm()
     if form.validate_on_submit():
-        user = User.query.filter_by(email=form.email.data).first()
+        user = User.query.filter_by(email=form.email.data).one_or_none()
         if user:
             send_password_reset_email(user)
         flash('Check your email for the instructions to reset your password')

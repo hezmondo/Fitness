@@ -57,10 +57,9 @@ def edititem(id):
         db.session.commit()
         db.session.commit()
 
-        return redirect('/editrent/{}'.format(id))
+        return redirect('/edititem/{}'.format(id))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "edit")
-        item.date = today
 
     return render_template('edititem.html', action="edit", title='edit', item=item, stypes=stypes,
                            today=today, typename=typename, users_all=users_all, users_set=users_set)
@@ -167,7 +166,6 @@ def newitem():
 
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "new")
-        item.date = today
         item.miles = "0.00"
         item.minutes = "0.00"
         item.stats = "0.00"
@@ -338,10 +336,13 @@ def getvalues(id, action):
         typename = item.typedet
     elif action == "new":
         item = Fitness()
+        item.date = today
         users_set = users_all[1]
         typename = stypes[4]
     else:
         raise ValueError("getvalues(): Unrecognised value for 'action' (\"{}\")".format(action))
+    # if action == "clone":
+    #     item.date = today
 
     return item, typename, stypes, users_all, users_set, today
 

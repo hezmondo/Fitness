@@ -257,8 +257,6 @@ def recentstats():
             fit_query_type = 99
         else:
             qname = "No valid query selected"
-
-        return render_template('recentstats.html', title=qname)
     else:
         qname = "walks"
         fit_query_type = 5
@@ -352,7 +350,7 @@ def get_total(User_Id, Start_Date, Fit_Id):
     Fit_Id = Fit_Id
     if Fit_Id == 9:
         total = Fitness.query.with_entities(func.sum(Fitness.stats).label("units")).filter(
-            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date, Fitness.type_id == Fit_Id).one_or_none()
+            Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date, Fitness.type_id == Fit_Id).first()[0]
     elif Fit_Id == 99:
         total = Fitness.query.with_entities(func.sum(Fitness.miles)).filter(
             Fitness.users.any(User.id == User_Id), Fitness.date >= Start_Date,

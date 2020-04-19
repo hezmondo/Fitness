@@ -29,7 +29,8 @@ def cloneitem(id):
         # `rent.id` gets updated to hold the INSERTed id
         new_id = item.id
 
-        return redirect('/edititem/{}'.format(new_id))
+        return redirect(url_for('index'))
+        # return redirect('/edititem/{}'.format(new_id))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "clone")
 
@@ -57,7 +58,8 @@ def edititem(id):
         db.session.commit()
         db.session.commit()
 
-        return redirect('/edititem/{}'.format(id))
+        return redirect(url_for('index'))
+        # return redirect('/edititem/{}'.format(id))
     else:
         item, typename, stypes, users_all, users_set, today = getvalues(id, "edit")
 

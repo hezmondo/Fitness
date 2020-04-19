@@ -62,3 +62,9 @@ Run > Edit Configurations ....  Find the Before launch near bottom of tab, click
 Select desired Browser, for Url enter: http://127.0.0.1:5000/
 
 Now you can run/debug from PyCharm, and it will open a new browser window for your app each time automatically.  Output/debug messages go to PyCharm Console tab.
+
+### Run flask in PS or CMD window opened in folder containing app:
+
+	flask run
+	flask db migrate
+	flask db upgrade

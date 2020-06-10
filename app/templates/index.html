@@ -21,7 +21,7 @@
             <button type="submit" class="btn btn-block btn-primary" name="filter" value="Gardening">Gardening</button>
         </div>
         <div class="col-sm-2">
-            <a href="/newitem" class="btn btn-block btn-primary" role="button">Add new item</a>
+            <a href="/fit_item/0?action=new" class="btn btn-block btn-primary" role="button">Add new item</a>
         </div>
     </div>
 </form>
@@ -67,8 +67,8 @@
             <td align="right"> {{ item.miles }}</td>
             <td align="right"> {{ item.stats }}</td>
             <td align="right"> {{ item.minutes }}</td>
-            <td><a href="/edititem/{{ item.id }}">Edit</a></td>
-            <td><a href="/cloneitem/{{ item.id }}">Clone</a></td>
+            <td><a href="/fit_item/{{ item.id }}?action=edit">Edit</a></td>
+            <td><a href="/fit_item/{{ item.id }}?action=clone">Clone</a></td>
         </tr>
         {% endfor %}
         </tbody>

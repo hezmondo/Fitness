@@ -78,7 +78,7 @@ def get_total(User_Id, Start_Date, Fit_Id):
 
 @bp.route('/', methods=['GET', 'POST'])
 @bp.route('/index', methods=['GET', 'POST'])
-# @login_required
+@login_required
 def index():
     if request.method == "POST":
         seltype = request.form["filter"]

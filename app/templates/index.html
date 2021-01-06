@@ -50,7 +50,7 @@
         <tbody>
         {% for item in items %}
         <tr id="{{ item.id }}">
-            <td>{{ item.date }}</td>
+            <td>{{ item.date.strftime('%d-%b-%Y') }}</td>
             <td>
                 <ul style="list-style: none; padding-left: 0;">
                     {% for username in dict_usernames[item.id] %}
